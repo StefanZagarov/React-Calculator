@@ -6,7 +6,49 @@
 }
 
 .calculator {
-  border: 1px solid black;
+  display: flex;
+  flex-direction: column;
+
+  border-radius: 10px;
+  padding: 2em;
+
+  gap: 0.5em;
+
+  background-color: rgb(20, 20, 20);
 }
 
-.btn {}
+.screen {
+  display: flex;
+
+  gap: 0.5em;
+}
+
+.buttons {
+  display: flex;
+  gap: 0.5em
+}
+
+.row {
+  display: flex;
+  justify-content: space-between;
+  gap: 0.5em;
+}
+
+.row-functions {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 0.5em;
+}
+
+.left-panel {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5em
+}
+
+.right-panel {
+  display: flex;
+
+  gap: 0.5em
+}
