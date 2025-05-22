@@ -6,8 +6,6 @@ interface CalcScreenProps {
 }
 
 export default function CalcScreen({ input, result }: CalcScreenProps) {
-
-
   return (
     <>
       <div className={styles["screen"]}>

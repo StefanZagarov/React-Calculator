@@ -28,6 +28,11 @@
   gap: 0.5em
 }
 
+.top-buttons {
+  display: flex;
+  gap: 0.5em;
+}
+
 .row {
   display: flex;
   justify-content: space-between;

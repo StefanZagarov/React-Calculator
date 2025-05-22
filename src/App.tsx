@@ -8,6 +8,22 @@ function App() {
   const [result, setResult] = useState(`0`);
 
   function handleClick(value: string) {
+    switch (value) {
+      case `C`:
+        setInput(`0`);
+        setResult(`0`);
+        return;
+      case `<--`:
+        setInput(prevInput => {
+          const newInput = prevInput.slice(0, -1);
+
+          if (newInput.length === 0) return `0`;
+          return newInput;
+        });
+        if (input.length === 0) setInput(`0`);
+        return;
+    }
+
     setInput(input => input + value);
   }
 
@@ -17,6 +33,12 @@ function App() {
 
         <div className="screen">
           <CalcScreen input={input} result={result} />
+        </div>
+
+        <div className="top-buttons">
+          <Button variant="function-top" value='<--' onClick={handleClick} />
+          <Button variant="function-top" value='=' onClick={handleClick} />
+          <Button variant="function-top" value='=' onClick={handleClick} />
         </div>
 
         <div className="buttons">
@@ -42,7 +64,7 @@ function App() {
             <div className="row">
               <Button value='.' onClick={handleClick} />
               <Button value='0' onClick={handleClick} />
-              <Button variant="function" value='=' onClick={handleClick} />
+              <Button variant="function" value='+/-' onClick={handleClick} />
             </div>
           </div>
 
@@ -50,15 +72,15 @@ function App() {
             <div className="row-functions">
               <Button variant="function" value='/' onClick={handleClick} />
               <Button variant="function" value='*' onClick={handleClick} />
-              <Button variant="function" value='-' onClick={handleClick} />
+              <Button variant="function" value='(' onClick={handleClick} />
               <Button variant="function" value='+' onClick={handleClick} />
             </div>
 
             <div className="row-functions">
               <Button variant="function" value='C' onClick={handleClick} />
-              <Button variant="function" value='+/-' onClick={handleClick} />
-              <Button variant="function" value='( )' onClick={handleClick} />
               <Button variant="function" value='%' onClick={handleClick} />
+              <Button variant="function" value=')' onClick={handleClick} />
+              <Button variant="function" value='-' onClick={handleClick} />
             </div>
           </div>
 
