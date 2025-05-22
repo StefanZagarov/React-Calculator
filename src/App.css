@@ -10,50 +10,27 @@
   flex-direction: column;
 
   border-radius: 10px;
+
+  width: 90vw;
+  max-width: 600px;
+  min-width: 350px;
   padding: 2em;
 
   gap: 0.5em;
 
   background-color: rgb(20, 20, 20);
+
+  aspect-ratio: 3 / 4;
 }
 
-.screen {
+.screen,
+.buttons,
+.row {
   display: flex;
-
   gap: 0.5em;
+  flex: 1;
 }
 
 .buttons {
-  display: flex;
-  gap: 0.5em
-}
-
-.top-buttons {
-  display: flex;
-  gap: 0.5em;
-}
-
-.row {
-  display: flex;
-  justify-content: space-between;
-  gap: 0.5em;
-}
-
-.row-functions {
-  display: flex;
   flex-direction: column;
-  justify-content: space-between;
-  gap: 0.5em;
-}
-
-.left-panel {
-  display: flex;
-  flex-direction: column;
-  gap: 0.5em
-}
-
-.right-panel {
-  display: flex;
-
-  gap: 0.5em
 }

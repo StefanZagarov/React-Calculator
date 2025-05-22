@@ -35,58 +35,46 @@ function App() {
           <CalcScreen input={input} result={result} />
         </div>
 
-        <div className="top-buttons">
-          <Button variant="function-top" value='<--' onClick={handleClick} />
-          <Button variant="function-top" value='=' onClick={handleClick} />
-          <Button variant="function-top" value='=' onClick={handleClick} />
-        </div>
-
         <div className="buttons">
-          <div className="left-panel">
-            <div className="row">
-              <Button value='7' onClick={handleClick} />
-              <Button value='8' onClick={handleClick} />
-              <Button value='9' onClick={handleClick} />
-            </div>
-
-            <div className="row">
-              <Button value='4' onClick={handleClick} />
-              <Button value='5' onClick={handleClick} />
-              <Button value='6' onClick={handleClick} />
-            </div>
-
-            <div className="row">
-              <Button value='1' onClick={handleClick} />
-              <Button value='2' onClick={handleClick} />
-              <Button value='3' onClick={handleClick} />
-            </div>
-
-            <div className="row">
-              <Button value='.' onClick={handleClick} />
-              <Button value='0' onClick={handleClick} />
-              <Button variant="function" value='+/-' onClick={handleClick} />
-            </div>
+          <div className="row">
+            <Button variant="function-top" value='<--' onClick={handleClick} />
+            <Button variant="function-top" value='=' onClick={handleClick} />
           </div>
 
-          <div className="right-panel">
-            <div className="row-functions">
-              <Button variant="function" value='/' onClick={handleClick} />
-              <Button variant="function" value='*' onClick={handleClick} />
-              <Button variant="function" value='(' onClick={handleClick} />
-              <Button variant="function" value='+' onClick={handleClick} />
-            </div>
-
-            <div className="row-functions">
-              <Button variant="function" value='C' onClick={handleClick} />
-              <Button variant="function" value='%' onClick={handleClick} />
-              <Button variant="function" value=')' onClick={handleClick} />
-              <Button variant="function" value='-' onClick={handleClick} />
-            </div>
+          <div className="row">
+            <Button value='7' onClick={handleClick} />
+            <Button value='8' onClick={handleClick} />
+            <Button value='9' onClick={handleClick} />
+            <Button variant="function" value='/' onClick={handleClick} />
+            <Button variant="function" value='*' onClick={handleClick} />
           </div>
 
+          <div className="row">
+            <Button value='4' onClick={handleClick} />
+            <Button value='5' onClick={handleClick} />
+            <Button value='6' onClick={handleClick} />
+            <Button variant="function" value='(' onClick={handleClick} />
+            <Button variant="function" value='+' onClick={handleClick} />
+          </div>
+
+          <div className="row">
+            <Button value='1' onClick={handleClick} />
+            <Button value='2' onClick={handleClick} />
+            <Button value='3' onClick={handleClick} />
+            <Button variant="function" value='C' onClick={handleClick} />
+            <Button variant="function" value='%' onClick={handleClick} />
+          </div>
+
+          <div className="row">
+            <Button value='.' onClick={handleClick} />
+            <Button value='0' onClick={handleClick} />
+            <Button variant="function" value='+/-' onClick={handleClick} />
+            <Button variant="function" value=')' onClick={handleClick} />
+            <Button variant="function" value='-' onClick={handleClick} />
+          </div>
         </div>
       </div>
-    </div>
+    </div >
   );
 }
 
