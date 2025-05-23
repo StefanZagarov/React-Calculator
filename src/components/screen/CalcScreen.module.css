@@ -21,6 +21,7 @@
     font-size: clamp(1.4rem, 4.5vw, 1.8rem);
     color: black;
 
+    text-align: right;
     text-wrap: balance;
 }
 
