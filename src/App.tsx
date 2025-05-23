@@ -11,6 +11,9 @@ const MINUS = `-`;
 const TIMES = `*`;
 const DIVIDE = `/`;
 const PERCENT = `%`;
+const NEGATE = `+/-`; // Turn the current inputting number negative, or if its negative, turn it positive e.g. 5 + 1 will turn the 1 into -1
+const LEFT_BRACKET = `(`;
+const RIGHT_BRACKET = `)`;
 
 function App() {
   const [input, setInput] = useState<string>(`0`);
