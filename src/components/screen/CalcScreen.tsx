@@ -26,6 +26,10 @@ export default function CalcScreen({ input, result, cursorPosition, onUserInputC
     const newValue = e.target.value;
     const newCursorPos = e.target.selectionStart || 0;
     onUserInputChange(newValue, newCursorPos); // Inform App
+
+    if (newValue === ``) {
+      onUserInputChange(`0`, 1);
+    }
   };
 
   // HANDLER 2: When the user changes selection (clicks, uses arrow keys)
