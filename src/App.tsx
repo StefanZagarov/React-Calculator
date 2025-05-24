@@ -56,6 +56,52 @@ function App() {
       case MOVE_CARET_RIGHTMOST:
         setCaretPosition(input.length);
         return;
+
+      case EQUAL:
+        console.log("To be implemented");
+        return;
+
+      case PERCENT:
+        console.log("To be implemented");
+        return;
+
+      case NEGATE:
+        console.log("To be implemented");
+        return;
+
+      case LEFT_BRACKET:
+        console.log("To be implemented");
+        return;
+
+      case RIGHT_BRACKET:
+        console.log("To be implemented");
+        return;
+
+      case PLUS:
+        console.log("To be implemented");
+        return;
+
+      case MINUS:
+        console.log("To be implemented");
+        return;
+
+      case TIMES:
+        console.log("To be implemented");
+        return;
+
+      case DIVIDE:
+        console.log("To be implemented");
+        return;
+
+      default:
+        console.log("Invalid input");
+        break;
+    }
+
+    if (input === `0` && value !== `0`) {
+      setInput(value);
+      setCaretPosition(currentCaretPosition + 1);
+      return;
     }
 
     const partBeforeCaret = input.slice(0, currentCaretPosition);
