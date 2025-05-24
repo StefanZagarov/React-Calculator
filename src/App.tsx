@@ -3,6 +3,8 @@ import './App.css';
 import Button from './components/button/Button';
 import CalcScreen from './components/screen/CalcScreen';
 
+// TODO: Add logic to swap current operator (+, -, etc.) when a new operator is clicked if there are no numbers yet
+
 const C = `C`;
 const BACKSPACE = `<--`;
 const EQUAL = `=`;
@@ -14,7 +16,7 @@ const PERCENT = `%`;
 const NEGATE = `+/-`; // Turn the current inputting number negative, or if its negative, turn it positive e.g. 5 + 1 will turn the 1 into -1
 const LEFT_BRACKET = `(`;
 const RIGHT_BRACKET = `)`;
-const MOVE_CARET_RIGHT = `>>`;
+const MOVE_CARET_RIGHTMOST = `>>`;
 
 function App() {
   const [input, setInput] = useState<string>(`0`);
@@ -39,28 +41,29 @@ function App() {
         return;
 
       case BACKSPACE:
+        if (currentCaretPosition === 0) return;
         newInput = input.slice(0, currentCaretPosition - 1) + input.slice(currentCaretPosition);
 
-        if (newInput === "") { // More robust than newInput.length === 0 if "" is possible
+        if (newInput === "") {
           setInput('0');
-          // setCaretPosition(1);
-        } else {
+        }
+        else {
           setInput(newInput);
           setCaretPosition(Math.max(0, currentCaretPosition - 1));
         }
         return;
 
-      case MOVE_CARET_RIGHT:
+      case MOVE_CARET_RIGHTMOST:
         setCaretPosition(input.length);
         return;
     }
-
 
     const partBeforeCaret = input.slice(0, currentCaretPosition);
     const partAfterCaret = input.slice(currentCaretPosition);
     const newInputValue = partBeforeCaret + value + partAfterCaret;
 
     setInput(newInputValue);
+    setCaretPosition(currentCaretPosition + 1);
   }
 
   return (
