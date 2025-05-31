@@ -18,7 +18,7 @@ const LEFT_BRACKET = `(`;
 const RIGHT_BRACKET = `)`;
 const MOVE_CARET_RIGHTMOST = `>>`;
 
-const operators = [PLUS, MINUS, TIMES, DIVIDE, PERCENT];
+const operators = [PLUS, MINUS, TIMES, DIVIDE];
 
 function App() {
   const [inputScreen, setInputScreen] = useState<string>(`0`);
@@ -35,7 +35,7 @@ function App() {
     handleNewInput(value);
   };
 
-  function resolveNewInputResult(value: string, currentCaretPosition: number) {
+  function resolveNewInput(value: string, currentCaretPosition: number) {
     const partBeforeCaret = inputScreen.slice(0, currentCaretPosition);
     const partAfterCaret = inputScreen.slice(currentCaretPosition);
     const newInputValue = partBeforeCaret + value + partAfterCaret;
@@ -48,27 +48,64 @@ function App() {
     return inputScreen[caretPosition - 1] === undefined;
   }
 
-  function resolveOperatorResult(inputValue: string, caretPosition: number) {
-    if (operators.includes(inputScreen[caretPosition - 1])) {
-      const partBeforeCaret = inputScreen.slice(0, caretPosition - 1);
-      const partAfterCaret = inputScreen.slice(caretPosition);
-      const newInputValue = partBeforeCaret + inputValue + partAfterCaret;
+  function replaceCurrentOperator(inputValue: string) {
+    const partBeforeCaret = inputScreen.slice(0, caretPosition - 1);
+    const partAfterCaret = inputScreen.slice(caretPosition);
+    const newInputValue = partBeforeCaret + inputValue + partAfterCaret;
 
-      setInputScreen(newInputValue);
-      // Keep caret position, workaround for a weird behavior causing it to go rightmost:
-      // Force change
-      setCaretPosition(caretPosition - 1);
-      // Then restore
-      requestAnimationFrame(() => {
-        setCaretPosition(caretPosition);
-      });
+    setInputScreen(newInputValue);
+    // TODO: Improve caret behavior, currently without this logic the caret goes rightmost
+    // Keep caret position, workaround for a weird behavior causing it to go rightmost:
+    // Force change
+    setCaretPosition(caretPosition - 1);
+    // Then restore
+    requestAnimationFrame(() => {
+      setCaretPosition(caretPosition);
+    });
+  }
+
+  function resolveOperatorInput(inputValue: string, caretPosition: number) {
+    if (operators.includes(inputScreen[caretPosition - 1])) {
+      replaceCurrentOperator(inputValue);
     }
     else {
-      resolveNewInputResult(inputValue, caretPosition);
+      resolveNewInput(inputValue, caretPosition);
     };
   }
 
   // TODO: Make result screen to automatically calculate input field's data, if an operator is present
+
+  function suggestResult(): string {
+    // Trigger on present operator
+    // TODO: Add percent operator evaluation logic - % needs multiplier after it
+    // TODO: Edge cases: operator without number after it. Brackets, empty brackets, half brackets
+    try {
+      const fixedExpr = inputScreen.replace(/%(\d|\()/g, '%*$1');
+      // Replace percentage values like "5%" with "(5/100)"
+      // Evaluate safely using Function
+      // Convert percentage values: replace "50%" with "(50/100)"
+      const expressionWithPercent = fixedExpr.replace(/(\d+(\.\d+)?)%/g, "($1/100)");
+
+      // Only allow safe characters (numbers, operators, brackets, decimal)
+      if (!/^[\d+\-*/().%\s]+$/.test(inputScreen)) {
+        throw new Error("Invalid characters in expression");
+      }
+
+      // Evaluate safely using Function
+      const result = Function(`"use strict"; return (${expressionWithPercent})`)();
+      // Alternative
+      // const result = eval(expressionWithPercent);
+
+      if (typeof result === "number" && isFinite(result)) {
+        return result.toString();
+      }
+
+      return "Error";
+    } catch (error) {
+      console.log(error);
+      return "Error";
+    }
+  }
 
   function handleNewInput(inputValue: string) {
     const currentCaretPosition = caretPosition;
@@ -92,18 +129,20 @@ function App() {
           setCaretPosition(Math.max(0, currentCaretPosition - 1));
         }
         return;
-
+      // TODO: Fix caret being removed
       case MOVE_CARET_RIGHTMOST:
         setCaretPosition(inputScreen.length);
         return;
 
       case EQUAL:
+        // TODO: Add to a list of history
         console.log("To be implemented");
+        setResult(suggestResult());
         return;
 
       case PERCENT:
         if (isLeftOfCaretEmpty()) return;
-        resolveOperatorResult(inputValue, currentCaretPosition);
+        resolveOperatorInput(inputValue, currentCaretPosition);
         return;
 
       case NEGATE:
@@ -114,38 +153,38 @@ function App() {
 
       case LEFT_BRACKET:
         if (isLeftOfCaretEmpty()) return;
-        resolveNewInputResult(inputValue, currentCaretPosition);
+        resolveNewInput(inputValue, currentCaretPosition);
         console.log("To be implemented");
         return;
 
       case RIGHT_BRACKET:
         if (isLeftOfCaretEmpty()) return;
-        resolveNewInputResult(inputValue, currentCaretPosition);
+        resolveNewInput(inputValue, currentCaretPosition);
         console.log("To be implemented");
         return;
 
       case PLUS:
         if (isLeftOfCaretEmpty()) return;
-        resolveOperatorResult(inputValue, currentCaretPosition);
+        resolveOperatorInput(inputValue, currentCaretPosition);
 
         console.log("To be implemented");
         return;
 
       case MINUS:
         if (isLeftOfCaretEmpty()) return;
-        resolveOperatorResult(inputValue, currentCaretPosition);
+        resolveOperatorInput(inputValue, currentCaretPosition);
         console.log("To be implemented");
         return;
 
       case TIMES:
         if (isLeftOfCaretEmpty()) return;
-        resolveOperatorResult(inputValue, currentCaretPosition);
+        resolveOperatorInput(inputValue, currentCaretPosition);
         console.log("To be implemented");
         return;
 
       case DIVIDE:
         if (isLeftOfCaretEmpty()) return;
-        resolveOperatorResult(inputValue, currentCaretPosition);
+        resolveOperatorInput(inputValue, currentCaretPosition);
         console.log("To be implemented");
         return;
     }
@@ -156,7 +195,7 @@ function App() {
       return;
     }
 
-    resolveNewInputResult(inputValue, currentCaretPosition);
+    resolveNewInput(inputValue, currentCaretPosition);
   }
 
   return (
