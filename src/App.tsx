@@ -2,7 +2,9 @@ import { useState } from 'react';
 import './App.css';
 import Button from './components/button/Button';
 import CalcScreen from './components/screen/CalcScreen';
+import { Parser } from 'expr-eval';
 
+// TODO: Break this code into utils/hooks
 // TODO: Add logic to swap current operator (+, -, etc.) when a new operator is clicked if there are no numbers yet
 
 const C = `C`;
@@ -20,6 +22,8 @@ const MOVE_CARET_RIGHTMOST = `>>`;
 
 const operators = [PLUS, MINUS, TIMES, DIVIDE];
 
+const parser = new Parser();
+
 function App() {
   const [inputScreen, setInputScreen] = useState<string>(`0`);
   const [result, setResult] = useState<string>(`0`);
@@ -35,13 +39,16 @@ function App() {
     handleNewInput(value);
   };
 
-  function resolveNewInput(value: string, currentCaretPosition: number) {
+  // Write the new input in the input field
+  function resolveNewInput(value: string, currentCaretPosition: number): string {
     const partBeforeCaret = inputScreen.slice(0, currentCaretPosition);
     const partAfterCaret = inputScreen.slice(currentCaretPosition);
     const newInputValue = partBeforeCaret + value + partAfterCaret;
 
     setInputScreen(newInputValue);
     setCaretPosition(currentCaretPosition + 1);
+
+    return newInputValue;
   }
 
   function isLeftOfCaretEmpty(): boolean {
@@ -62,11 +69,16 @@ function App() {
     requestAnimationFrame(() => {
       setCaretPosition(caretPosition);
     });
+
+    return newInputValue;
   }
 
+  // Check if there is operator at the front and replace it if there is, otherwise write the new operator
   function resolveOperatorInput(inputValue: string, caretPosition: number) {
     if (operators.includes(inputScreen[caretPosition - 1])) {
-      replaceCurrentOperator(inputValue);
+      const neInputValue = replaceCurrentOperator(inputValue);
+
+      calculateResult(neInputValue);
     }
     else {
       resolveNewInput(inputValue, caretPosition);
@@ -74,36 +86,26 @@ function App() {
   }
 
   // TODO: Make result screen to automatically calculate input field's data, if an operator is present
-
-  function suggestResult(): string {
+  function calculateResult(expression: string): void {
     // Trigger on present operator
-    // TODO: Add percent operator evaluation logic - % needs multiplier after it
     // TODO: Edge cases: operator without number after it. Brackets, empty brackets, half brackets
     try {
-      const fixedExpr = inputScreen.replace(/%(\d|\()/g, '%*$1');
-      // Replace percentage values like "5%" with "(5/100)"
-      // Evaluate safely using Function
-      // Convert percentage values: replace "50%" with "(50/100)"
+      const fixedExpr = expression.replace(/%(\d|\()/g, '%*$1');
+      // Convert percentage values. Example: "50%" becomes "(50/100)", "3.5%" becomes "(3.5/100)"
       const expressionWithPercent = fixedExpr.replace(/(\d+(\.\d+)?)%/g, "($1/100)");
 
-      // Only allow safe characters (numbers, operators, brackets, decimal)
-      if (!/^[\d+\-*/().%\s]+$/.test(inputScreen)) {
-        throw new Error("Invalid characters in expression");
-      }
-
-      // Evaluate safely using Function
-      const result = Function(`"use strict"; return (${expressionWithPercent})`)();
-      // Alternative
-      // const result = eval(expressionWithPercent);
+      // Upgrade to mathjs if more complex calculations are required (e.g. sin, cos, etc.)
+      const result = parser.evaluate(expressionWithPercent);
 
       if (typeof result === "number" && isFinite(result)) {
-        return result.toString();
+        setResult(result.toString());
+        return;
       }
 
-      return "Error";
+      setResult("Invalid expression");
     } catch (error) {
       console.log(error);
-      return "Error";
+      setResult("Invalid expression");
     }
   }
 
@@ -137,7 +139,7 @@ function App() {
       case EQUAL:
         // TODO: Add to a list of history
         console.log("To be implemented");
-        setResult(suggestResult());
+        // setResult(suggestResult());
         return;
 
       case PERCENT:
@@ -195,7 +197,8 @@ function App() {
       return;
     }
 
-    resolveNewInput(inputValue, currentCaretPosition);
+    const newInputResult = resolveNewInput(inputValue, currentCaretPosition);
+    calculateResult(newInputResult);
   }
 
   return (
