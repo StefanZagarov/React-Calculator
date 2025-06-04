@@ -85,11 +85,34 @@ function App() {
     };
   }
 
+  function hasBalancedBrackets(expression: string): boolean {
+    let bracketCount = 0;
+
+    for (const char of expression) {
+      if (char === "(") bracketCount++;
+      else if (char === ")") bracketCount--;
+
+      if (bracketCount < 0) return false;
+    }
+
+    return bracketCount === 0;
+  }
+
   // TODO: Make result screen to automatically calculate input field's data, if an operator is present
   function calculateResult(expression: string): void {
+    console.log(expression);
     // Trigger on present operator
+    const hasOperator = /[+\-*/%]/.test(expression);
+    if (!hasOperator) return;
+
+    if (!hasBalancedBrackets(expression)) {
+      setResult("Invalid expression");
+      return;
+    }
+
     // TODO: Edge cases: operator without number after it. Brackets, empty brackets, half brackets
     try {
+      // Replace % with %* if needed
       const fixedExpr = expression.replace(/%(\d|\()/g, '%*$1');
       // Convert percentage values. Example: "50%" becomes "(50/100)", "3.5%" becomes "(3.5/100)"
       const expressionWithPercent = fixedExpr.replace(/(\d+(\.\d+)?)%/g, "($1/100)");
@@ -99,10 +122,10 @@ function App() {
 
       if (typeof result === "number" && isFinite(result)) {
         setResult(result.toString());
-        return;
       }
-
-      setResult("Invalid expression");
+      else {
+        setResult("Invalid expression");
+      }
     } catch (error) {
       console.log(error);
       setResult("Invalid expression");
@@ -149,45 +172,37 @@ function App() {
 
       case NEGATE:
         if (isLeftOfCaretEmpty()) return;
-
         console.log("To be implemented");
         return;
 
       case LEFT_BRACKET:
         if (isLeftOfCaretEmpty()) return;
         resolveNewInput(inputValue, currentCaretPosition);
-        console.log("To be implemented");
         return;
 
       case RIGHT_BRACKET:
         if (isLeftOfCaretEmpty()) return;
         resolveNewInput(inputValue, currentCaretPosition);
-        console.log("To be implemented");
         return;
 
       case PLUS:
         if (isLeftOfCaretEmpty()) return;
         resolveOperatorInput(inputValue, currentCaretPosition);
-
-        console.log("To be implemented");
         return;
 
       case MINUS:
         if (isLeftOfCaretEmpty()) return;
         resolveOperatorInput(inputValue, currentCaretPosition);
-        console.log("To be implemented");
         return;
 
       case TIMES:
         if (isLeftOfCaretEmpty()) return;
         resolveOperatorInput(inputValue, currentCaretPosition);
-        console.log("To be implemented");
         return;
 
       case DIVIDE:
         if (isLeftOfCaretEmpty()) return;
         resolveOperatorInput(inputValue, currentCaretPosition);
-        console.log("To be implemented");
         return;
     }
 
