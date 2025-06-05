@@ -4,11 +4,11 @@ import Button from './components/button/Button';
 import CalcScreen from './components/screen/CalcScreen';
 import { Parser } from 'expr-eval';
 
+// TODO NEXT: Implement negate logic
 // TODO: Break this code into utils/hooks
-// TODO: Add logic to swap current operator (+, -, etc.) when a new operator is clicked if there are no numbers yet
 
 const C = `C`;
-const BACKSPACE = `<--`;
+const BACKSPACE = `<--`; // Add an icon for consistency through all browsers
 const EQUAL = `=`;
 const PLUS = `+`;
 const MINUS = `-`;
@@ -76,18 +76,45 @@ function App() {
   // Check if there is operator at the front and replace it if there is, otherwise write the new operator
   function resolveOperatorInput(inputValue: string, caretPosition: number) {
     if (operators.includes(inputScreen[caretPosition - 1])) {
-      const neInputValue = replaceCurrentOperator(inputValue);
-
-      calculateResult(neInputValue);
+      const newInputValue = replaceCurrentOperator(inputValue);
+      calculateResult(newInputValue);
     }
     else {
-      resolveNewInput(inputValue, caretPosition);
+      const newInputValue = resolveNewInput(inputValue, caretPosition);
+      calculateResult(newInputValue);
     };
+  }
+
+  function handleNegate(input: string, caretPosition: number): string {
+
+    const matches = [...input.matchAll(/-?\d+(\.\d+)?/g)];
+
+    for (const match of matches) {
+      const start = match.index!;
+      const end = start + match[0].length;
+
+      if (caretPosition >= start && caretPosition <= end) {
+        const number = match[0];
+
+        const negated = number.startsWith('-')
+          ? number.slice(1) // remove minus
+          : '-' + number;   // add minus
+
+        const result = input.slice(0, start) + negated + input.slice(end);
+
+        setInputScreen(result); // Update UI
+
+        return result;
+      }
+    }
+
+    // No number under caret
+    return input;
   }
 
   function hasBalancedBrackets(expression: string): boolean {
     let bracketCount = 0;
-
+    // Maybe do this only on bracket input
     for (const char of expression) {
       if (char === "(") bracketCount++;
       else if (char === ")") bracketCount--;
@@ -100,9 +127,8 @@ function App() {
 
   // TODO: Make result screen to automatically calculate input field's data, if an operator is present
   function calculateResult(expression: string): void {
-    console.log(expression);
     // Trigger on present operator
-    const hasOperator = /[+\-*/%]/.test(expression);
+    const hasOperator = /[+\-*/%]\s*\d/.test(expression);
     if (!hasOperator) return;
 
     if (!hasBalancedBrackets(expression)) {
@@ -152,6 +178,8 @@ function App() {
         else {
           setInputScreen(newInput);
           setCaretPosition(Math.max(0, currentCaretPosition - 1));
+
+          calculateResult(newInput);
         }
         return;
       // TODO: Fix caret being removed
@@ -171,18 +199,21 @@ function App() {
         return;
 
       case NEGATE:
-        if (isLeftOfCaretEmpty()) return;
-        console.log("To be implemented");
+        newInput = handleNegate(newInput, currentCaretPosition);
+
+        calculateResult(newInput);
         return;
 
       case LEFT_BRACKET:
         if (isLeftOfCaretEmpty()) return;
-        resolveNewInput(inputValue, currentCaretPosition);
+        newInput = resolveNewInput(inputValue, currentCaretPosition);
+        calculateResult(newInput);
         return;
 
       case RIGHT_BRACKET:
         if (isLeftOfCaretEmpty()) return;
-        resolveNewInput(inputValue, currentCaretPosition);
+        newInput = resolveNewInput(inputValue, currentCaretPosition);
+        calculateResult(newInput);
         return;
 
       case PLUS:
