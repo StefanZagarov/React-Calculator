@@ -4,7 +4,8 @@ import Button from './components/button/Button';
 import CalcScreen from './components/screen/CalcScreen';
 import { Parser } from 'expr-eval';
 
-// TODO NEXT: Implement negate logic
+// TODO NEXT: Improve the result screen to contain the numbers if they become too long
+// TODO NEXT 1: Create a CI/CD pipeline to be able to share the app with my friends
 // TODO: Break this code into utils/hooks
 
 const C = `C`;
@@ -87,6 +88,8 @@ function App() {
 
   function handleNegate(input: string, caretPosition: number): string {
 
+    if (inputScreen === "0") return input;
+
     const matches = [...input.matchAll(/-?\d+(\.\d+)?/g)];
 
     for (const match of matches) {
@@ -95,16 +98,23 @@ function App() {
 
       if (caretPosition >= start && caretPosition <= end) {
         const number = match[0];
+        const isNegative = number.startsWith('-');
 
-        const negated = number.startsWith('-')
-          ? number.slice(1) // remove minus
-          : '-' + number;   // add minus
+        const negated = isNegative
+          ? number.slice(1)
+          : '-' + number;
 
-        const result = input.slice(0, start) + negated + input.slice(end);
+        const newInput = input.slice(0, start) + negated + input.slice(end);
 
-        setInputScreen(result); // Update UI
+        // Adjust caret based on insertion/removal of minus
+        const caretShift = isNegative ? -1 : 1;
+        const newCaretPos = caretPosition + caretShift;
 
-        return result;
+        // Ensure caret doesn't go out of bounds
+        setCaretPosition(Math.max(0, newCaretPos));
+        setInputScreen(newInput);
+        isNegateToggled = !isNegateToggled;
+        return newInput;
       }
     }
 
@@ -128,11 +138,12 @@ function App() {
   // TODO: Make result screen to automatically calculate input field's data, if an operator is present
   function calculateResult(expression: string): void {
     // Trigger on present operator
-    const hasOperator = /[+\-*/%]\s*\d/.test(expression);
-    if (!hasOperator) return;
+    const hasOperatorAndNumbers = /\d[+\-*/%]-?\d/.test(expression);
+
+    if (!hasOperatorAndNumbers) return;
 
     if (!hasBalancedBrackets(expression)) {
-      setResult("Invalid expression");
+      setResult("Unbalanced brackets");
       return;
     }
 
