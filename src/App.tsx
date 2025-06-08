@@ -113,7 +113,7 @@ function App() {
         // Ensure caret doesn't go out of bounds
         setCaretPosition(Math.max(0, newCaretPos));
         setInputScreen(newInput);
-        isNegateToggled = !isNegateToggled;
+
         return newInput;
       }
     }
