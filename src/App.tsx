@@ -7,16 +7,17 @@ import { Parser } from 'expr-eval';
 // TODO NEXT: Improve the result screen to contain the numbers if they become too long
 // TODO NEXT 1: Create a CI/CD pipeline to be able to share the app with my friends
 // TODO: Break this code into utils/hooks
+// TODO: Handle cases of where we have operator and a dot right after "+.256"
 
 const C = `C`;
-const BACKSPACE = `<--`; // Add an icon for consistency through all browsers
+const BACKSPACE = `<--`; //TODO: Add an icon for consistency through all browsers
 const EQUAL = `=`;
 const PLUS = `+`;
 const MINUS = `-`;
 const TIMES = `*`;
 const DIVIDE = `/`;
 const PERCENT = `%`;
-const NEGATE = `+/-`; // Turn the current inputting number negative, or if its negative, turn it positive e.g. 5 + 1 will turn the 1 into -1
+const NEGATE = `+/-`;
 const LEFT_BRACKET = `(`;
 const RIGHT_BRACKET = `)`;
 const MOVE_CARET_RIGHTMOST = `>>`;
