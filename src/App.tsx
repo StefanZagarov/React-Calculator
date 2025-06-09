@@ -4,10 +4,10 @@ import Button from './components/button/Button';
 import CalcScreen from './components/screen/CalcScreen';
 import { Parser } from 'expr-eval';
 
-// TODO NEXT: Improve the result screen to contain the numbers if they become too long
 // TODO NEXT 1: Create a CI/CD pipeline to be able to share the app with my friends
 // TODO: Break this code into utils/hooks
-// TODO: Handle cases of where we have operator and a dot right after "+.256"
+// TODO: Handle cases of where we have operator and a dot right after, e.g. "+.256"
+// TODO: Fix spamming .
 
 const C = `C`;
 const BACKSPACE = `<--`; //TODO: Add an icon for consistency through all browsers
@@ -161,12 +161,10 @@ function App() {
       if (typeof result === "number" && isFinite(result)) {
         setResult(result.toString());
       }
-      else {
-        setResult("Invalid expression");
-      }
+
     } catch (error) {
       console.log(error);
-      setResult("Invalid expression");
+      return;
     }
   }
 
