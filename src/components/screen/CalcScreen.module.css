@@ -29,4 +29,8 @@
     font-size: clamp(2.4rem, 7vw, 3.4rem);
 
     color: white;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: clip;
+    direction: rtl;
 }
