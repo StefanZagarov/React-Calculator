@@ -4,6 +4,10 @@ import Button from './components/button/Button';
 import CalcScreen from './components/screen/CalcScreen';
 import { Parser } from 'expr-eval';
 
+// TODO: Add favicon
+// TODO: 20(20) should automatically do 20*(20)
+// TODO: On mobile when you input it opens the keyboard, find a fix, and change it to be just number pad
+// TODO: Maybe disale scientific numbers
 // TODO: Break this code into utils/hooks
 // TODO: Handle cases of where we have operator and a dot right after, e.g. "+.256"
 // TODO: Fix spamming .
@@ -20,6 +24,7 @@ const NEGATE = `+/-`;
 const LEFT_BRACKET = `(`;
 const RIGHT_BRACKET = `)`;
 const MOVE_CARET_RIGHTMOST = `>>`;
+const DOT = `.`;
 
 const operators = [PLUS, MINUS, TIMES, DIVIDE];
 
@@ -135,7 +140,17 @@ function App() {
     return bracketCount === 0;
   }
 
-  // TODO: Make result screen to automatically calculate input field's data, if an operator is present
+  // Check if the current number (where the caret is positioned) already contains a dot
+  function currentNumberHasDot(caretPosition: number): boolean {
+    for (let i = caretPosition - 1; i >= 0; i--) {
+      const char = inputScreen[i];
+      if (char === DOT) return true;
+      if (operators.includes(char) || char === LEFT_BRACKET || char === RIGHT_BRACKET) return false;
+    }
+
+    return false;
+  }
+
   function calculateResult(expression: string): void {
     // Trigger on present operator
     const hasOperatorAndNumbers = /\d[+\-*/%]-?\d/.test(expression);
@@ -200,6 +215,11 @@ function App() {
         // TODO: Add to a list of history
         console.log("To be implemented");
         // setResult(suggestResult());
+        return;
+
+      case DOT:
+        if (currentNumberHasDot(currentCaretPosition)) return;
+        resolveNewInput(inputValue, currentCaretPosition);
         return;
 
       case PERCENT:

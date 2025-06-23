@@ -9,7 +9,7 @@ interface CalcScreenProps {
   onCaretPositionChange: (newCaretPosition: number) => void;
 }
 
-const numberRegExCheck = /^[0-9/*\-+]$/;
+const numberRegExCheck = /^[0-9/*\-+.]$/;
 
 export default function CalcScreen({ inputScreen: input, result, caretPosition, onKeyboardInput, onCaretPositionChange }: CalcScreenProps) {
   const inputRef = useRef<HTMLInputElement>(null);
